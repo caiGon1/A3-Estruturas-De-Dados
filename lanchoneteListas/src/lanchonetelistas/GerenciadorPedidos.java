@@ -19,25 +19,24 @@ public class GerenciadorPedidos {
 
     public void adicionar(Pedido p) {
         switch(atual) {
-            case LISTA: lista.add(p); break;
-            case PILHA: pilha.push(p); break;
-            case FILA: fila.add(p); break;
-            case LISTA_ENCADEADA: listaEncadeada.add(p); break;
+            case LISTA -> lista.add(p);
+            case PILHA -> pilha.push(p);
+            case FILA -> fila.add(p);
+            case LISTA_ENCADEADA -> listaEncadeada.add(p);
         }
     }
 
     public void remover() {
         switch(atual) {
-            case LISTA:
-            case LISTA_ENCADEADA:
+            case LISTA, LISTA_ENCADEADA -> {
                 if (!lista.isEmpty()) lista.remove(lista.size() - 1);
-                break;
-            case PILHA:
+            }
+            case PILHA -> {
                 if (!pilha.isEmpty()) pilha.pop();
-                break;
-            case FILA:
+            }
+            case FILA -> {
                 if (!fila.isEmpty()) fila.remove();
-                break;
+            }
         }
     }
 
@@ -53,10 +52,18 @@ public class GerenciadorPedidos {
 
     public String getNomeEstrutura() {
         switch(atual) {
-            case LISTA: return "Lista";
-            case PILHA: return "Pilha";
-            case FILA: return "Fila";
-            case LISTA_ENCADEADA: return "Lista Encadeada";
+            case LISTA -> {
+                return "Lista";
+            }
+            case PILHA -> {
+                return "Pilha";
+            }
+            case FILA -> {
+                return "Fila";
+            }
+            case LISTA_ENCADEADA -> {
+                return "Lista Encadeada";
+            }
         }
         return "";
     }

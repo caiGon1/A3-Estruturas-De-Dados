@@ -2,47 +2,32 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 package lanchonetelistas;
-import lanchonetelistas.Pedido;
+
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author anani
  */
-
-
 public class escolha_pedido extends javax.swing.JFrame {
-    private String itemSelecionado;
-    private double valorSelecionado;
+    
+    private Pedido itemSelecionado;
     private interfacegrafica telaPrincipal;
-    private interfacegrafica main;
-    
-
-public escolha_pedido(interfacegrafica main) {
-    this.main = main;
-    initComponents();
-}
-
-
-
-
-
-   
-
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(escolha_pedido.class.getName());
-    
+
     /**
      * Creates new form escolha_pedido
      */
-    public escolha_pedido() {
-        initComponents();
     
-
+    public escolha_pedido(interfacegrafica telaPrincipal) {
+        this.telaPrincipal = telaPrincipal;
+        initComponents();
     }
     
-
-   
-
+    public escolha_pedido() {
+        initComponents();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -53,156 +38,164 @@ public escolha_pedido(interfacegrafica main) {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        add_1 = new javax.swing.JButton();
-        add_2 = new javax.swing.JButton();
-        add_3 = new javax.swing.JButton();
-        add_4 = new javax.swing.JButton();
-        add_5 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        Finalizar = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         pedido_escolhido = new javax.swing.JLabel();
-        feito_btn = new javax.swing.JButton();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
-        jLabel1.setText("Cardápio");
+        jLabel2.setText("Cachorro-Quente - 5.50");
 
-        jLabel2.setText("Cachorro Quente - 5,50R$");
+        jLabel3.setText("X-Burger - 10.90");
 
-        jLabel3.setText("X-Burger - 10,90R$");
+        jLabel4.setText("Batata-Frita - 7.50");
 
-        jLabel4.setText("Guaraná - 4,50R$");
+        jLabel5.setText("Guaraná - 4.50");
 
-        jLabel5.setText("Batata-Frita - 7,50R$");
+        jLabel6.setText("MilkShake - 11.00");
 
-        jLabel6.setText("MilkShake - 11R$");
+        Finalizar.setText("Finalizar");
+        Finalizar.addActionListener(this::FinalizarActionPerformed);
 
-        add_1.setText("Add");
-        add_1.addActionListener(this::add_1ActionPerformed);
+        jButton3.setText("Add");
+        jButton3.addActionListener(this::jButton3ActionPerformed);
 
-        add_2.setText("Add");
-        add_2.addActionListener(this::add_2ActionPerformed);
+        jButton2.setText("Add");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
 
-        add_3.setText("Add");
+        jButton4.setText("Add");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
 
-        add_4.setText("Add");
+        jButton5.setText("Add");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
 
-        add_5.setText("Add");
+        jButton6.setText("Add");
+        jButton6.addActionListener(this::jButton6ActionPerformed);
 
-        jLabel7.setText("Pedido Adicionado:");
-
-        feito_btn.setText("FEITO");
-        feito_btn.addActionListener(this::feito_btnActionPerformed);
+        jLabel1.setText("Pedido:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(feito_btn)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel1)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                        .addComponent(add_1))
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton6))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add_2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add_5))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add_3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add_4))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(pedido_escolhido, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                        .addComponent(jButton3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton5))))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Finalizar)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(pedido_escolhido, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(feito_btn))
-                .addGap(18, 18, 18)
+                .addComponent(Finalizar)
+                .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(add_1))
-                .addGap(18, 18, 18)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(add_2))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(add_3))
-                .addGap(18, 18, 18)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(add_4))
-                .addGap(18, 18, 18)
+                    .addComponent(jButton4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jButton5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(add_5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                    .addComponent(jButton6))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
+                    .addComponent(jLabel1)
                     .addComponent(pedido_escolhido, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void add_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_1ActionPerformed
-                                    
-    Pedido p = new Pedido("Cachorro Quente", 1, 5.50);
-    pedido_escolhido.setText("Cachorro Quente");
+    private void FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FinalizarActionPerformed
+       if (itemSelecionado == null) {
+                JOptionPane.showMessageDialog(this, "Selecione algum item!");
+                return;
+            }
 
-    main.adicionarPedido(p);
-    }//GEN-LAST:event_add_1ActionPerformed
+            // envia à tabela da tela principal
+            telaPrincipal.adicionarPedido(itemSelecionado);
 
-    private void add_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_2ActionPerformed
-    Pedido p = new Pedido("Cachorro Quente", 1, 5.50);
-    pedido_escolhido.setText("Cachorro Quente");
 
-    main.adicionarPedido(p);
-    }//GEN-LAST:event_add_2ActionPerformed
+            dispose();  // agora Fecha CORRETAMENTE
+    }//GEN-LAST:event_FinalizarActionPerformed
 
-    private void feito_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_feito_btnActionPerformed
-         if (itemSelecionado == null) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Selecione algum item!");
-        return;
-    }
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+            itemSelecionado = new Pedido("Cachorro Quente", 1, 5.50);
+            pedido_escolhido.setText("Cachorro Quente");
+    }//GEN-LAST:event_jButton3ActionPerformed
 
-    telaPrincipal.adicionarItemNaTabela(itemSelecionado, 1, valorSelecionado);
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        itemSelecionado = new Pedido("X-Burger", 1, 10.90);
+        pedido_escolhido.setText("X-Burger");
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-    this.dispose();
-    }//GEN-LAST:event_feito_btnActionPerformed
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        itemSelecionado = new Pedido("Guaraná", 1, 4.50);
+        pedido_escolhido.setText("Guaraná");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        itemSelecionado = new Pedido("Batata-Frita", 1, 7.50);
+            pedido_escolhido.setText("Batata-Frita");
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        itemSelecionado = new Pedido("MilkShake", 1, 11.00);
+            pedido_escolhido.setText("MilkShake");
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,19 +223,19 @@ public escolha_pedido(interfacegrafica main) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton add_1;
-    private javax.swing.JButton add_2;
-    private javax.swing.JButton add_3;
-    private javax.swing.JButton add_4;
-    private javax.swing.JButton add_5;
-    private javax.swing.JButton feito_btn;
+    private javax.swing.JButton Finalizar;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel pedido_escolhido;
     // End of variables declaration//GEN-END:variables
 }

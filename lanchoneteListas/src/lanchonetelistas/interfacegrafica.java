@@ -4,12 +4,6 @@
  */
 package lanchonetelistas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
 public class interfacegrafica extends javax.swing.JFrame {
     // Lista normal
 // Estruturas de dados
+DefaultTableModel modeloTabela;
+
 private java.util.List<Pedido> lista = new java.util.ArrayList<>();
 private java.util.Stack<Pedido> pilha = new java.util.Stack<>();
 private java.util.Queue<Pedido> fila = new java.util.LinkedList<>();
@@ -35,12 +31,17 @@ private int modoView = 0;
     /**
      * Creates new form interfacegrafica
      */
+   
     public interfacegrafica() {
-        initComponents();
+       initComponents(); // sempre primeiro
+    modeloTabela = (DefaultTableModel) tabela_itens.getModel();
+    atualizarLabelView();
     }
+    
+
 
     public void adicionarPedido(Pedido p) {
-    lista.add(p);
+     lista.add(p);
     pilha.push(p);
     fila.add(p);
 
@@ -67,27 +68,37 @@ private void atualizarTabela() {
     model.setRowCount(0);
 
     switch (modoView) {
-        case 0: // LISTA
+        case 0 -> {
+            // LISTA
             for (Pedido p : lista) {
                 model.addRow(new Object[]{ p.item, p.quantidade, p.valor });
             }
-            break;
+        }
 
-        case 1: // PILHA (topo primeiro)
+        case 1 -> {
+            // PILHA (topo primeiro)
             for (int i = pilha.size() - 1; i >= 0; i--) {
                 Pedido p = pilha.get(i);
                 model.addRow(new Object[]{ p.item, p.quantidade, p.valor });
             }
-            break;
+        }
 
-        case 2: // FILA
+        case 2 -> {
+            // FILA
             for (Pedido p : fila) {
                 model.addRow(new Object[]{ p.item, p.quantidade, p.valor });
             }
-            break;
+        }
     }
 }
 
+private void atualizarLabelView() {
+    switch (modoView) {
+        case 0 -> lbl_view.setText("Visualização: Lista");
+        case 1 -> lbl_view.setText("Visualização: Pilha (LIFO)");
+        case 2 -> lbl_view.setText("Visualização: Fila (FIFO)");
+    }
+}
 
 
     /**
@@ -105,6 +116,8 @@ private void atualizarTabela() {
         add_pedidos = new javax.swing.JButton();
         alt_view = new javax.swing.JButton();
         remover_pedido = new javax.swing.JButton();
+        lbl_view = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -134,6 +147,10 @@ private void atualizarTabela() {
         remover_pedido.setText("Remover");
         remover_pedido.addActionListener(this::remover_pedidoActionPerformed);
 
+        lbl_view.setText("Lista");
+
+        jLabel2.setText("View atual:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -155,11 +172,20 @@ private void atualizarTabela() {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(63, 63, 63))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(163, 163, 163)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(lbl_view)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_view)
+                    .addComponent(jLabel2))
+                .addGap(7, 7, 7)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -180,33 +206,42 @@ private void atualizarTabela() {
     }//GEN-LAST:event_add_pedidosActionPerformed
 
     private void alt_viewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alt_viewActionPerformed
-          modoView = (modoView + 1) % 3;  // Alterna entre 0, 1 e 2
+          modoView = (modoView + 1) % 3;  
     atualizarTabela();
+    atualizarLabelView();
     }//GEN-LAST:event_alt_viewActionPerformed
 
     private void remover_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remover_pedidoActionPerformed
-     if (lista.isEmpty()) return;
+      if (lista.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Não há itens para remover.");
+        return;
+    }
+
+    Pedido removido = null;
 
     switch (modoView) {
 
-        case 0: // LISTA
-            lista.remove(lista.size() - 1);
-            pilha.pop();
-            fila.poll();
-            break;
+        case 0 -> {
+            int linha = tabela_itens.getSelectedRow();
+            if (linha < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione um item para remover!");
+                return;
+            }
+            removido = lista.get(linha);
+        }
 
-        case 1: // PILHA
-            Pedido removido = pilha.pop();
-            lista.remove(removido);
-            fila.remove(removido);
-            break;
+        case 1 -> {
+            removido = pilha.pop();
+        }
 
-        case 2: // FILA
-            Pedido removidoFila = fila.poll();
-            lista.remove(removidoFila);
-            pilha.remove(removidoFila);
-            break;
+        case 2 -> {
+            removido = fila.poll();
+        }
     }
+
+    lista.remove(removido);
+    pilha.remove(removido);
+    fila.remove(removido);
 
     atualizarTabela();
     }//GEN-LAST:event_remover_pedidoActionPerformed
@@ -215,6 +250,7 @@ private void atualizarTabela() {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+         
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -240,7 +276,9 @@ private void atualizarTabela() {
     private javax.swing.JButton add_pedidos;
     private javax.swing.JButton alt_view;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbl_view;
     private javax.swing.JButton remover_pedido;
     private javax.swing.JTable tabela_itens;
     // End of variables declaration//GEN-END:variables
