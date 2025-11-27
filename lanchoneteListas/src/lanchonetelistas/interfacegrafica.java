@@ -12,8 +12,7 @@ import javax.swing.table.DefaultTableModel;
  * @author anani
  */
 public class interfacegrafica extends javax.swing.JFrame {
-    // Lista normal
-// Estruturas de dados
+
 DefaultTableModel modeloTabela;
 
 private java.util.List<Pedido> lista = new java.util.ArrayList<>();
@@ -33,7 +32,7 @@ private int modoView = 0;
      */
    
     public interfacegrafica() {
-       initComponents(); // sempre primeiro
+       initComponents(); 
     modeloTabela = (DefaultTableModel) tabela_itens.getModel();
     atualizarLabelView();
     }
@@ -76,7 +75,7 @@ private void atualizarTabela() {
         }
 
         case 1 -> {
-            // PILHA (topo primeiro)
+            // PILHA 
             for (int i = pilha.size() - 1; i >= 0; i--) {
                 Pedido p = pilha.get(i);
                 model.addRow(new Object[]{ p.item, p.quantidade, p.valor });
@@ -94,10 +93,21 @@ private void atualizarTabela() {
 
 private void atualizarLabelView() {
     switch (modoView) {
-        case 0 -> lbl_view.setText("Visualização: Lista");
-        case 1 -> lbl_view.setText("Visualização: Pilha (LIFO)");
-        case 2 -> lbl_view.setText("Visualização: Fila (FIFO)");
+    case 0 -> {
+        lbl_view.setText("Visualização: Lista");
+        remover_pedido.setText("Remover");
     }
+    case 1 -> {
+        lbl_view.setText("Visualização: Pilha (LIFO)");
+        remover_pedido.setText("Pop");
+    }
+    case 2 -> {
+        lbl_view.setText("Visualização: Fila (FIFO)");
+        remover_pedido.setText("Poll");
+    }
+
+}
+
 }
 
 
@@ -117,7 +127,7 @@ private void atualizarLabelView() {
         alt_view = new javax.swing.JButton();
         remover_pedido = new javax.swing.JButton();
         lbl_view = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        admin_btn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -149,7 +159,8 @@ private void atualizarLabelView() {
 
         lbl_view.setText("Lista");
 
-        jLabel2.setText("View atual:");
+        admin_btn.setText("Gerenciamento de mesas");
+        admin_btn.addActionListener(this::admin_btnActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,27 +178,27 @@ private void atualizarLabelView() {
                         .addComponent(alt_view)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                         .addComponent(remover_pedido)
-                        .addGap(15, 15, 15))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(63, 63, 63))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(163, 163, 163)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(lbl_view)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(15, 15, 15))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(48, 48, 48))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lbl_view)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(admin_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_view)
-                    .addComponent(jLabel2))
-                .addGap(7, 7, 7)
+                    .addComponent(admin_btn))
+                .addGap(3, 3, 3)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(add_pedidos)
                     .addComponent(alt_view)
@@ -246,6 +257,11 @@ private void atualizarLabelView() {
     atualizarTabela();
     }//GEN-LAST:event_remover_pedidoActionPerformed
 
+    private void admin_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_admin_btnActionPerformed
+    RestaurantTablesApp tela2 = new RestaurantTablesApp();
+    tela2.setVisible(true);
+    }//GEN-LAST:event_admin_btnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -274,9 +290,9 @@ private void atualizarLabelView() {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add_pedidos;
+    private javax.swing.JButton admin_btn;
     private javax.swing.JButton alt_view;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_view;
     private javax.swing.JButton remover_pedido;

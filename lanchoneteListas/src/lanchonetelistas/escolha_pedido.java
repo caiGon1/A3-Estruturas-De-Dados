@@ -165,11 +165,11 @@ public class escolha_pedido extends javax.swing.JFrame {
                 return;
             }
 
-            // envia à tabela da tela principal
+            
             telaPrincipal.adicionarPedido(itemSelecionado);
 
 
-            dispose();  // agora Fecha CORRETAMENTE
+            dispose(); 
     }//GEN-LAST:event_FinalizarActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

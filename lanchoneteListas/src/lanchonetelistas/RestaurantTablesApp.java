@@ -1,11 +1,14 @@
+package lanchonetelistas;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
+
+
 public class RestaurantTablesApp extends JFrame {
 
-    // === MODELO DE DADOS (lista encadeada simples) ===
+
     static class Table {
         int id;
         int capacity;
@@ -23,21 +26,18 @@ public class RestaurantTablesApp extends JFrame {
     static class Node {
         Table table;
         Node next;
-        Node(Table t) { table = t; next = null; }
+        Node(Table t) { this.table = t; next = null; }
     }
 
     static class TableList {
-        private Node head;
-        private int nextId = 1;
-
-        public TableList() { head = null; }
+        Node head;
+        int nextId = 1;
 
         public Table createTable(int capacity) {
             Table t = new Table(nextId++, capacity);
             Node n = new Node(t);
-            if (head == null) {
-                head = n;
-            } else {
+            if (head == null) head = n;
+            else {
                 Node cur = head;
                 while (cur.next != null) cur = cur.next;
                 cur.next = n;
@@ -67,29 +67,11 @@ public class RestaurantTablesApp extends JFrame {
             return null;
         }
 
-        public boolean seatParty(int id, String partyName) {
-            Table t = findById(id);
-            if (t == null) return false;
-            if (t.occupied) return false;
-            t.occupied = true;
-            t.partyName = partyName;
-            return true;
-        }
-
-        public boolean freeTable(int id) {
-            Table t = findById(id);
-            if (t == null) return false;
-            if (!t.occupied) return false;
-            t.occupied = false;
-            t.partyName = "";
-            return true;
-        }
-
         public Table[] toArray() {
-            int size = 0;
+            int count = 0;
             Node cur = head;
-            while (cur != null) { size++; cur = cur.next; }
-            Table[] arr = new Table[size];
+            while (cur != null) { count++; cur = cur.next; }
+            Table[] arr = new Table[count];
             cur = head;
             int i = 0;
             while (cur != null) {
@@ -105,263 +87,370 @@ public class RestaurantTablesApp extends JFrame {
         }
     }
 
-    // === UI ===
-    private TableList tableList = new TableList();
-    private DefaultTableModel tableModel;
-    private JTable jTable;
 
-    private JTextField tfCapacity;
-    private JTextField tfRemoveId;
-    private JTextField tfSeatId;
-    private JTextField tfPartyName;
-    private JTextField tfFreeId;
-    private JLabel lblStatus;
+    static class TableMapPanel extends JPanel {
+        private TableList list;
+        private boolean encadeado;
+   
+        private final int[][] fixedPositions = {
+            {180, 90}, 
+            {90, 220},  
+            {80, 40},  
+            {260, 260}, 
+            {280, 60}   
+        };
 
-    private TableMapPanel mapPanel;
+        public TableMapPanel(TableList list, boolean encadeado) {
+            this.list = list;
+            this.encadeado = encadeado;
+            setPreferredSize(new Dimension(600, 420));
+            setBackground(Color.white);
+        }
 
-    public RestaurantTablesApp() {
-        super("Gerenciador de Mesas - Lista Encadeada");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 520);
-        setLocationRelativeTo(null);
-        initComponents();
+        public void setEncadeado(boolean encadeado) {
+            this.encadeado = encadeado;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Table[] tables = list.toArray();
+
+    
+            int n = tables.length;
+            Point[] positions = new Point[Math.max(n,0)];
+
+            for (int i = 0; i < Math.min(n, fixedPositions.length); i++) {
+                positions[i] = new Point(fixedPositions[i][0], fixedPositions[i][1]);
+            }
+            if (n > fixedPositions.length) {
+             
+                int cols = 4;
+                int startY = 330;
+                int gapX = 120;
+                int gapY = 70;
+                for (int i = fixedPositions.length; i < n; i++) {
+                    int idx = i - fixedPositions.length;
+                    int col = idx % cols;
+                    int row = idx / cols;
+                    int x = 40 + col * gapX;
+                    int y = startY + row * gapY;
+                    positions[i] = new Point(x, y);
+                }
+            }
+
+         
+            for (int i = 0; i < n; i++) {
+                Table t = tables[i];
+                Point p = positions[i];
+                if (p == null) continue;
+                int x = p.x, y = p.y;
+                int w = 80, h = 60;
+            
+                if (t.occupied) g.setColor(new Color(220, 70, 70));
+                else g.setColor(new Color(110, 200, 120));
+                g.fillRoundRect(x, y, w, h, 16, 16);
+
+           
+                g.setColor(Color.DARK_GRAY);
+                g.drawRoundRect(x, y, w, h, 16, 16);
+
+               
+                g.setColor(Color.BLACK);
+                Font f = g.getFont().deriveFont(Font.BOLD, 14f);
+                g.setFont(f);
+                String idText = String.valueOf(t.id);
+           
+                g.drawString(idText, x + w/2 - (g.getFontMetrics().stringWidth(idText)/2), y + 22);
+
+          
+                Font f2 = g.getFont().deriveFont(Font.PLAIN, 11f);
+                g.setFont(f2);
+                String capText = "cap:" + t.capacity;
+                g.drawString(capText, x + 6, y + h - 18);
+
+           
+                if (t.occupied) {
+                    String name = t.partyName;
+                    String shortName = name.length() > 12 ? name.substring(0, 11) + "…" : name;
+                    g.drawString(shortName, x + 6, y + h - 6);
+                }
+            }
+
+     
+            if (encadeado) {
+                g.setColor(Color.BLACK);
+                for (int i = 0; i < n - 1; i++) {
+                    Point a = positions[i];
+                    Point b = positions[i+1];
+                    if (a == null || b == null) continue;
+                 
+                    int ax = a.x + 80;
+                    int ay = a.y + 30;
+                    int bx = b.x;
+                    int by = b.y + 30;
+        
+                    drawArrow(g, ax, ay, bx, by);
+                }
+            }
+        }
+
+
+        private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setStroke(new BasicStroke(2));
+   
+            g2.drawLine(x1, y1, x2, y2);
+     
+            double phi = Math.toRadians(20);
+            double barb = 12;
+            double dy = y2 - y1;
+            double dx = x2 - x1;
+            double theta = Math.atan2(dy, dx);
+            double x, y;
+            x = x2 - barb * Math.cos(theta + phi);
+            y = y2 - barb * Math.sin(theta + phi);
+            g2.drawLine(x2, y2, (int)x, (int)y);
+            x = x2 - barb * Math.cos(theta - phi);
+            y = y2 - barb * Math.sin(theta - phi);
+            g2.drawLine(x2, y2, (int)x, (int)y);
+            g2.dispose();
+        }
     }
 
-    private void initComponents() {
 
-        setLayout(new BorderLayout(8,8));
+    private TableList tableList = new TableList();
+    private DefaultTableModel tableModel;
+    private JTable table;
+    private TableMapPanel mapPanel;
 
-        // Painel de desenho das mesas
-        mapPanel = new TableMapPanel(tableList);
-        add(mapPanel, BorderLayout.WEST);
+    private boolean isEncadeado = true;
 
-        // tabela
-        String[] columns = {"ID", "Capacidade", "Ocupada", "Nome do Grupo"};
-        tableModel = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) { return false; }
-        };
-        jTable = new JTable(tableModel);
 
-        JScrollPane scroll = new JScrollPane(jTable);
-        add(scroll, BorderLayout.CENTER);
+    private JTextField tfCapacity = new JTextField();
+    private JTextField tfRemove = new JTextField();
+    private JTextField tfSeatId = new JTextField();
+    private JTextField tfSeatName = new JTextField();
+    private JTextField tfFreeId = new JTextField();
+    private JLabel lblMode = new JLabel("Modo: Encadeado");
+    private JLabel lblStatus = new JLabel("Pronto");
 
-        // painel de controles
-        JPanel controls = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(6,6,6,6);
-        c.fill = GridBagConstraints.HORIZONTAL;
+    public RestaurantTablesApp() {
+        super("Gerenciador de Mesas");
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setSize(1100, 720);
+        setLocationRelativeTo(null);
+        initUI();
+    }
 
-        // Adicionar mesa
-        c.gridx = 0; c.gridy = 0;
-        controls.add(new JLabel("Capacidade:"), c);
-        tfCapacity = new JTextField(5);
-        c.gridx = 1; controls.add(tfCapacity, c);
+    private void initUI() {
+
+        JPanel left = new JPanel();
+        left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
+        left.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        left.setPreferredSize(new Dimension(220, 0));
+
+
+        JButton btnToggle = new JButton("Alternar Modo");
+        btnToggle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnToggle.addActionListener(e -> {
+            isEncadeado = !isEncadeado;
+            lblMode.setText("Modo: " + (isEncadeado ? "Encadeado" : "Não Encadeado"));
+            mapPanel.setEncadeado(isEncadeado);
+            mapPanel.repaint();
+        });
+
+        lblMode.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblMode.setFont(lblMode.getFont().deriveFont(Font.BOLD, 14f));
+        left.add(lblMode);
+        left.add(Box.createRigidArea(new Dimension(0,6)));
+        left.add(btnToggle);
+        left.add(Box.createRigidArea(new Dimension(0,10)));
+
+    
+        JButton btnDetails = new JButton("Ver Detalhes");
+        btnDetails.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnDetails.addActionListener(e -> showSelectedDetails());
+        left.add(btnDetails);
+        left.add(Box.createRigidArea(new Dimension(0,10)));
+
+    
+        left.add(new JLabel("Criar mesa - Capacidade"));
+        tfCapacity.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        left.add(tfCapacity);
         JButton btnAdd = new JButton("Adicionar Mesa");
-        c.gridx = 2; controls.add(btnAdd, c);
-
+        btnAdd.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnAdd.addActionListener(e -> {
             try {
                 int cap = Integer.parseInt(tfCapacity.getText().trim());
                 if (cap <= 0) throw new NumberFormatException();
-                Table t = tableList.createTable(cap);
-                updateEverything();
-                lblStatus.setText("Mesa adicionada (ID=" + t.id + ")");
+                tableList.createTable(cap);
                 tfCapacity.setText("");
+                refreshAll("Mesa adicionada");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Capacidade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Capacidade inválida");
             }
         });
+        left.add(btnAdd);
+        left.add(Box.createRigidArea(new Dimension(0,8)));
 
-        // Remover
-        c.gridx = 0; c.gridy = 1;
-        controls.add(new JLabel("Remover ID:"), c);
-        tfRemoveId = new JTextField(5);
-        c.gridx = 1; controls.add(tfRemoveId, c);
-        JButton btnRemove = new JButton("Remover Mesa");
-        c.gridx = 2; controls.add(btnRemove, c);
-
+        left.add(new JLabel("Remover mesa - ID"));
+        tfRemove.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        left.add(tfRemove);
+        JButton btnRemove = new JButton("Remover");
         btnRemove.addActionListener(e -> {
             try {
-                int id = Integer.parseInt(tfRemoveId.getText().trim());
+                int id = Integer.parseInt(tfRemove.getText().trim());
                 boolean ok = tableList.removeTableById(id);
-                updateEverything();
-                lblStatus.setText(ok ? "Mesa removida." : "Mesa não encontrada.");
-                tfRemoveId.setText("");
+                tfRemove.setText("");
+                refreshAll(ok ? "Mesa removida" : "Mesa não encontrada");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "ID inválido");
             }
         });
+        left.add(btnRemove);
+        left.add(Box.createRigidArea(new Dimension(0,8)));
 
-        // Sentar clientes
-        c.gridx = 0; c.gridy = 2;
-        controls.add(new JLabel("Sentar ID:"), c);
-        tfSeatId = new JTextField(5);
-        c.gridx = 1; controls.add(tfSeatId, c);
-
-        c.gridx = 0; c.gridy = 3;
-        controls.add(new JLabel("Nome do Grupo:"), c);
-        tfPartyName = new JTextField(10);
-        c.gridx = 1; controls.add(tfPartyName, c);
-
-        JButton btnSeat = new JButton("Sentar Clientes");
-        c.gridx = 2; controls.add(btnSeat, c);
-
+        left.add(new JLabel("Ocupar - ID"));
+        tfSeatId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        left.add(tfSeatId);
+        left.add(new JLabel("Nome do grupo"));
+        tfSeatName.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        left.add(tfSeatName);
+        JButton btnSeat = new JButton("Ocupar Mesa");
         btnSeat.addActionListener(e -> {
             try {
                 int id = Integer.parseInt(tfSeatId.getText().trim());
-                String party = tfPartyName.getText().trim();
-                if (party.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Informe o nome do grupo.");
+                Table t = tableList.findById(id);
+                if (t == null) {
+                    JOptionPane.showMessageDialog(this, "Mesa não encontrada");
                     return;
                 }
-                boolean ok = tableList.seatParty(id, party);
-                updateEverything();
-                lblStatus.setText(ok ? "Clientes sentados." : "Mesa já ocupada ou não existe.");
-                tfSeatId.setText(""); tfPartyName.setText("");
+                if (t.occupied) {
+                    JOptionPane.showMessageDialog(this, "Mesa já ocupada");
+                    return;
+                }
+                t.occupied = true;
+                t.partyName = tfSeatName.getText().trim();
+                tfSeatId.setText(""); tfSeatName.setText("");
+                refreshAll("Mesa ocupada");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID inválido.");
+                JOptionPane.showMessageDialog(this, "ID inválido");
             }
         });
+        left.add(btnSeat);
+        left.add(Box.createRigidArea(new Dimension(0,8)));
 
-        // Liberar mesa
-        c.gridx = 0; c.gridy = 4;
-        controls.add(new JLabel("Liberar ID:"), c);
-        tfFreeId = new JTextField(5);
-        c.gridx = 1; controls.add(tfFreeId, c);
-
+        left.add(new JLabel("Liberar - ID"));
+        tfFreeId.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        left.add(tfFreeId);
         JButton btnFree = new JButton("Liberar Mesa");
-        c.gridx = 2; controls.add(btnFree, c);
-
         btnFree.addActionListener(e -> {
             try {
                 int id = Integer.parseInt(tfFreeId.getText().trim());
-                boolean ok = tableList.freeTable(id);
-                updateEverything();
-                lblStatus.setText(ok ? "Mesa liberada." : "Mesa já está livre ou não existe.");
+                Table t = tableList.findById(id);
+                if (t == null) {
+                    JOptionPane.showMessageDialog(this, "Mesa não encontrada");
+                    return;
+                }
+                t.occupied = false;
+                t.partyName = "";
                 tfFreeId.setText("");
+                refreshAll("Mesa liberada");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID inválido.");
+                JOptionPane.showMessageDialog(this, "ID inválido");
             }
         });
+        left.add(btnFree);
+        left.add(Box.createVerticalGlue());
+        left.add(lblStatus);
 
-        // detalhes
-        JButton btnDetails = new JButton("Ver Detalhes");
-        c.gridx = 0; c.gridy = 5; c.gridwidth = 2;
-        controls.add(btnDetails, c);
+        add(left, BorderLayout.WEST);
 
-        btnDetails.addActionListener(e -> {
-            int sel = jTable.getSelectedRow();
-            if (sel == -1) {
-                JOptionPane.showMessageDialog(this, "Selecione uma mesa.");
-                return;
-            }
-            int id = (int) tableModel.getValueAt(sel, 0);
-            Table t = tableList.findById(id);
-            String msg = "ID: " + t.id + "\nCapacidade: " + t.capacity +
-                         "\nOcupada: " + (t.occupied ? "Sim" : "Não") +
-                         "\nGrupo: " + (t.partyName.isEmpty() ? "-" : t.partyName);
-            JOptionPane.showMessageDialog(this, msg);
-        });
+        mapPanel = new TableMapPanel(tableList, isEncadeado);
+        JPanel centerTop = new JPanel(new BorderLayout());
+        centerTop.add(mapPanel, BorderLayout.CENTER);
+        centerTop.setBorder(BorderFactory.createTitledBorder("Mapa das Mesas"));
 
-        // limpar tudo
-        JButton btnClear = new JButton("Limpar Tudo");
-        c.gridx = 2; c.gridy = 5; c.gridwidth = 1;
-        controls.add(btnClear, c);
+  
+        String[] cols = {"ID", "Capacidade", "Ocupada", "Grupo"};
+        tableModel = new DefaultTableModel(cols, 0) {
+            @Override public boolean isCellEditable(int row, int col) { return false; }
+        };
+        table = new JTable(tableModel);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane tableScroll = new JScrollPane(table);
+        tableScroll.setPreferredSize(new Dimension(400, 150));
+        JPanel centerBottom = new JPanel(new BorderLayout());
+        centerBottom.add(tableScroll, BorderLayout.CENTER);
+        centerBottom.setBorder(BorderFactory.createTitledBorder("Tabela de Mesas"));
 
-        btnClear.addActionListener(e -> {
+        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, centerTop, centerBottom);
+        split.setResizeWeight(0.7); 
+        add(split, BorderLayout.CENTER);
+
+
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton btnClearAll = new JButton("Limpar todas mesas");
+        btnClearAll.addActionListener(e -> {
             int op = JOptionPane.showConfirmDialog(this, "Remover todas as mesas?");
-            if (op == 0) {
+            if (op == JOptionPane.YES_OPTION) {
                 tableList.clear();
-                updateEverything();
-                lblStatus.setText("Tudo limpo.");
+                refreshAll("Todas as mesas removidas");
             }
         });
+        bottom.add(btnClearAll);
+        add(bottom, BorderLayout.SOUTH);
 
-        // status
-        lblStatus = new JLabel("Pronto.");
-        c.gridx = 0; c.gridy = 6; c.gridwidth = 3;
-        controls.add(lblStatus, c);
 
-        add(controls, BorderLayout.EAST);
-
-        addDemoTables();
-        updateEverything();
-    }
-
-    private void addDemoTables() {
         tableList.createTable(2);
         tableList.createTable(4);
         tableList.createTable(6);
+        tableList.createTable(4);
+        tableList.createTable(2);
+
+        refreshAll("Pronto");
     }
 
-    private void updateEverything() {
-        updateTableView();
+    private void refreshAll(String status) {
+   
+        tableModel.setRowCount(0);
+        for (Table t : tableList.toArray()) {
+            tableModel.addRow(new Object[]{ t.id, t.capacity, t.occupied ? "Sim" : "Não", t.partyName });
+        }
+        lblStatus.setText(status);
+        lblModeUpdate();
+        mapPanel.setEncadeado(isEncadeado);
         mapPanel.repaint();
     }
 
-    private void updateTableView() {
-        tableModel.setRowCount(0);
-        Table[] arr = tableList.toArray();
-        for (Table t : arr) {
-            tableModel.addRow(new Object[]{
-                t.id,
-                t.capacity,
-                t.occupied ? "Sim" : "Não",
-                t.partyName
-            });
+    private void lblModeUpdate() {
+
+        lblMode.setText("Modo: " + (isEncadeado ? "Encadeado" : "Não Encadeado"));
+    }
+
+    private void showSelectedDetails() {
+        int sel = table.getSelectedRow();
+        if (sel == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma linha na tabela para ver detalhes.");
+            return;
         }
+        int id = (int) tableModel.getValueAt(sel, 0);
+        Table t = tableList.findById(id);
+        if (t == null) {
+            JOptionPane.showMessageDialog(this, "Mesa não encontrada (inconsistência).");
+            return;
+        }
+        String msg = String.format("ID: %d%nCapacidade: %d%nOcupada: %s%nNome do Grupo: %s",
+                t.id, t.capacity, t.occupied ? "Sim" : "Não", t.partyName.isEmpty() ? "-" : t.partyName);
+        JOptionPane.showMessageDialog(this, msg, "Detalhes da Mesa", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {
-        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception ignored) {}
-
         SwingUtilities.invokeLater(() -> {
-            new RestaurantTablesApp().setVisible(true);
+            RestaurantTablesApp app = new RestaurantTablesApp();
+            app.setVisible(true);
         });
-    }
-}
-
-// =============================================
-// PAINEL QUE DESENHA O MAPA VISUAL DAS MESAS
-// =============================================
-class TableMapPanel extends JPanel {
-
-    private RestaurantTablesApp.TableList tableList;
-
-    public TableMapPanel(RestaurantTablesApp.TableList list) {
-        this.tableList = list;
-        setPreferredSize(new Dimension(350, 350));
-        setBackground(Color.WHITE);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        RestaurantTablesApp.Table[] tables = tableList.toArray();
-
-        int[][] positions = {
-            {150, 140},
-            {100, 220},
-            {80, 60},
-            {230, 230},
-            {240, 70}
-        };
-
-        for (int i = 0; i < tables.length && i < positions.length; i++) {
-            RestaurantTablesApp.Table t = tables[i];
-            int x = positions[i][0];
-            int y = positions[i][1];
-
-            g.setColor(t.occupied ? Color.RED : Color.GREEN);
-            g.fillRoundRect(x, y, 60, 60, 20, 20);
-
-            g.setColor(Color.BLACK);
-            g.drawRoundRect(x, y, 60, 60, 20, 20);
-
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString(String.valueOf(t.id), x + 25, y + 35);
-        }
     }
 }

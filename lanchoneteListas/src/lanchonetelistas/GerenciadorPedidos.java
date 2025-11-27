@@ -42,10 +42,18 @@ public class GerenciadorPedidos {
 
     public List<Pedido> getPedidos() {
         switch(atual) {
-            case LISTA: return new ArrayList<>(lista);
-            case PILHA: return new ArrayList<>(pilha);
-            case FILA: return new ArrayList<>(fila);
-            case LISTA_ENCADEADA: return new ArrayList<>(listaEncadeada);
+            case LISTA -> {
+                return new ArrayList<>(lista);
+            }
+            case PILHA -> {
+                return new ArrayList<>(pilha);
+            }
+            case FILA -> {
+                return new ArrayList<>(fila);
+            }
+            case LISTA_ENCADEADA -> {
+                return new ArrayList<>(listaEncadeada);
+            }
         }
         return null;
     }
